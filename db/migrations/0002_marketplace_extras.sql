@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS company_documents (
+ id TEXT PRIMARY KEY, company_id TEXT NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+ document_type TEXT NOT NULL, object_key TEXT NOT NULL, review_status TEXT NOT NULL DEFAULT 'pending',
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS favourites (
+ user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ vehicle_id TEXT NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(user_id,vehicle_id)
+);
+CREATE TABLE IF NOT EXISTS reviews (
+ id TEXT PRIMARY KEY, booking_id TEXT NOT NULL UNIQUE REFERENCES bookings(id),
+ customer_id TEXT NOT NULL REFERENCES users(id), vehicle_id TEXT NOT NULL REFERENCES vehicles(id),
+ rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5), comment TEXT,
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS notifications (
+ id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ title TEXT NOT NULL, body TEXT NOT NULL, read_at TEXT, created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS platform_settings (
+ key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+INSERT OR IGNORE INTO platform_settings(key,value) VALUES ('commission_basis_points','1000');
