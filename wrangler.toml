@@ -1,0 +1,15 @@
+name = "racghana-marketplace"
+main = "src/worker.js"
+compatibility_date = "2026-11-17"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "racghana-production"
+database_id = "f5a5ce07-0ae2-4259-87d7-7d6a7ff32460"
+
+[[r2_buckets]]
+binding = "ASSETS"
+bucket_name = "racghana-assets"
+
+# Configure secrets with: wrangler secret put BOOTSTRAP_TOKEN
+# Configure payment provider secret after receiving production credentials.
