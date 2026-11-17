@@ -1,25 +1,38 @@
-# RaC Ghana marketplace rebuild
+# RaC Ghana — Multi-vendor car rental marketplace
 
-Mobile-first multi-vendor car rental marketplace for Ghana.
+Mobile-first car rental marketplace for Ghana.
 
-## Current branch
-`rebuild/mobile-marketplace`
+## Deployment
+- Live hostname configured: https://racghana.edougan.com
+- Cloudflare Worker: `racghana-marketplace`
+- Cloudflare D1: `racghana-production`
+- Cloudflare R2: `racghana-assets`
+- Development branch: `rebuild/mobile-marketplace`
 
-## Prototype scope
-- Public car discovery and booking entry points
-- Customer, rental company and administrator dashboard shells
-- Responsive desktop and phone layouts
-- Rental company approval workflow states represented in UI
+## Implemented in the current deployment
+- Customer and rental-company registration
+- Secure password hashing (PBKDF2) and HttpOnly session cookies
+- Rental-company accounts start pending approval
+- Public vehicle catalogue only exposes approved listings from approved companies
+- Approved rental companies can submit vehicles for administrator review
+- Customer booking requests with date-overlap checks
+- Admin endpoints for company and vehicle approvals
+- Admin overview metrics
+- Mobile-responsive public page and dashboard entry points
+- D1 schema for users, companies, vehicles, images, bookings, payments, commissions, sessions, audit logs, documents, favourites, reviews and notifications
 
-## Important implementation status
-This branch is a front-end prototype. Authentication, database persistence, document verification, vehicle availability locking, payment processing, notifications and role-enforced APIs are not yet implemented. Do not use it to accept real bookings or payments.
+## Production launch blockers / remaining work
+This is an initial live deployment, not yet a complete production launch. Do not accept real payments or depend on it for operational rentals until these are completed and tested:
+- Create the first administrator using the one-time bootstrap endpoint and token stored as a Worker secret.
+- Implement booking status transitions and ownership checks for rental-company/customer actions.
+- Add vehicle and company-document uploads and review workflow using R2.
+- Complete Paystack server-side initialization, signed webhook verification, refunds and reconciliation; production Paystack credentials are not configured.
+- Configure transactional email/SMS/WhatsApp notifications.
+- Add rate limiting, login throttling, password reset, email verification, CSRF protections and monitoring/alerting.
+- Add booking concurrency protection at database level, payment idempotency and end-to-end automated tests.
+- Confirm legal pages, privacy policy, rental terms, cancellation/refund rules, company KYC requirements and Ghana tax/accounting treatment.
 
-## Planned production architecture
-- Cloudflare Workers + Static Assets for the app/API
-- D1 for relational marketplace records
-- R2 for vehicle and verification-document storage
-- Cloudflare Turnstile for abuse prevention
-- Payment gateway integration through a verified server-side provider adapter (Paystack plus supported Ghana mobile money/card rails)
-- Server-side role and ownership checks for customer, rental-company and admin access
+## Local development
+Install Wrangler, then run `npx wrangler dev`. Deploy only after reviewing environment bindings and secrets.
 
-Production deployment to racghana.com is intentionally not changed by this prototype branch.
+Required bindings are in `wrangler.toml`. Set secrets with Wrangler; never commit credentials.
